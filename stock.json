@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "nama_barang": "Pensil",
+        "harga": 1000,
+        "stok": 50
+    },
+    {
+        "id": 2,
+        "nama_barang": "Buku Tulis",
+        "harga": 5000,
+        "stok": 30
+    },
+    {
+        "id": 3,
+        "nama_barang": "Pensil Warna",
+        "harga": 2000,
+        "stok": 20
+    }
+]

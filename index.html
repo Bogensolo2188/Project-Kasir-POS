@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasir POS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFFFE0; /* Kuning */
+        }
+        header {
+            background-color: #FF0000; /* Merah */
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        footer {
+            background-color: #FF0000; /* Merah */
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .container {
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #FF4500; /* Oranye */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Kasir POS</h1>
+    </header>
+    
+    <div class="container">
+        <h2>Transaksi Penjualan</h2>
+        <!-- Form transaksi penjualan -->
+        <form id="transaksiForm">
+            <!-- Input fields here -->
+            Nama Barang: <input type="text" name="nama_barang"><br>
+            Harga: <input type="number" name="harga"><br>
+            Jumlah: <input type="number" name="jumlah"><br>
+            <input type="submit" value="Tambah ke Keranjang">
+        </form>
+
+        <!-- List transaksi -->
+        <h2>Daftar Transaksi</h2>
+        <div id="listTransaksi">
+            <?php include 'display_transaksi.php'; ?>
+        </div>
+    </div>
+
+    <!-- Tambah form untuk tambah barang -->
+    <div class="container">
+        <h2>Tambah Barang</h2>
+        <form id="tambahBarangForm">
+            <!-- Input fields here -->
+            Nama Barang: <input type="text" name="nama_barang"><br>
+            Harga: <input type="number" name="harga"><br>
+            Stok: <input type="number" name="stok"><br>
+            <input type="submit" value="Tambah Barang">
+        </form>
+    </div>
+
+    <!-- Tambah table untuk daftar stock -->
+    <div class="container">
+        <h2>Daftar Stock</h2>
+        <table id="stockTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Barang</th>
+                    <th>Harga</th>
+                    <th>Stok</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php include 'display_stock.php'; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tambah form untuk pembayaran -->
+    <div class="container">
+        <h2>Pembayaran</h2>
+        <form id="pembayaranForm">
+            Pembayaran: <input type="number" name="pembayaran"><br>
+            <input type="submit" value="Bayar">
+        </form>
+        <div id="pengembalian"></div>
+    </div>
+
+    <!-- jQuery script -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // AJAX untuk menambah barang
+            $('#tambahBarangForm').submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "tambah_barang.php",
+                    data: $('#tambahBarangForm').serialize(),
+                    success: function(response){
+                        alert(response);
+                        location.reload(); // Refresh halaman setelah berhasil menambah barang
+                    }
+                });
+            });
+
+            // AJAX untuk menambah transaksi
+            $('#transaksiForm').submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "tambah_transaksi.php",
+                    data: $('#transaksiForm').serialize(),
+                    success: function(response){
+                        alert(response);
+                        $('#listTransaksi').load('display_transaksi.php'); // Refresh list transaksi
+                    }
+                });
+            });
+
+            // AJAX untuk pembayaran
+            $('#pembayaranForm').submit(function(e){
+                e.preventDefault();
+                var pembayaran = parseInt($('input[name="pembayaran"]').val());
+                var totalPembayaran = <?php echo $total_pembayaran; ?>;
+                var pengembalian = pembayaran - totalPembayaran;
+                $('#pengembalian').html('Pengembalian: Rp ' + pengembalian.toLocaleString('id-ID'));
+            });
+        });
+    </script>
+</body>
+</html>
